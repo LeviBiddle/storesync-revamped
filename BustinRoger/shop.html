@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoreSync - Smart Shopping Solutions</title>
+  <link rel="shortcut icon" type="image/x-icon" href="madMax.ico" />
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { primary: '#FDCD22', secondary: '#00000' }, borderRadius: { 'none': '0px', 'sm': '8px', DEFAULT: '12px', 'md': '16px', 'lg': '20px', 'xl': '24px', '2xl': '28px', '3xl': '32px', 'full': '9999px', 'button': '12px' } } } }</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    :where([class^="ri-"])::before {
+      content: "\f3c2";
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .product-card {
+      background-color: #1F2937;
+      /* Dark gray for product background */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
+    }
+
+    .product-image {
+      transition: transform 0.3s ease;
+    }
+
+    .cart-sidebar {
+      transform: translateX(100%);
+      transition: transform 0.4s ease-in-out;
+    }
+
+    .cart-sidebar.open {
+      transform: translateX(0);
+    }
+
+    .cart-overlay {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease-in-out;
+    }
+
+    .cart-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    input[type="checkbox"]:checked {
+      background-color: #FDCD22;
+      /* Yellow */
+      border-color: #FDCD22;
+      /* Yellow */
+    }
+
+    input[type="checkbox"]:checked::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23fff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 13l4 4L19 7' /%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .text-secondary {
+      color: #FDCD22;
+      /* Changed from blue to yellow */
+    }
+
+    .bg-white {
+      background-color: #1F2937;
+      /* Changed from white to dark gray */
+    }
+
+    .text-gray-700 {
+      color: #e0e0e0;
+      /* Adjusted to match the dark theme */
+    }
+
+    .text-gray-600 {
+      color: #cbd5e1;
+      /* Slightly lighter gray for contrast */
+    }
+
+    .slide-in {
+      animation: slideIn 1s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .add-to-cart-animation {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .add-to-cart-animation::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(253, 205, 34, 0.5);
+      /* Ripple color */
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: ripple 0.6s ease-out;
+    }
+
+    @keyframes ripple {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 0.5;
+      }
+
+      100% {
+        width: 200px;
+        height: 200px;
+        opacity: 0;
+      }
+    }
+
+    .cart-icon-number {
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      background-color: #FDCD22;
+      color: #121212;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 9999px;
+      width: 1.25rem;
+      height: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center;
+    }
+
+    .pop-animation {
+      animation: pop 0.3s ease-in-out;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.3);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Smooth fade-in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Smooth hover scaling for buttons */
+    .hover-scale {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-scale:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900">
+  <!-- Header -->
+  <header class="w-full bg-gray-800 shadow-md sticky top-0 z-50 fade-in">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0 flex items-center">
+          <img src="newpic.png" alt="StoreSync Logo" class="h-8 mr-2">
+          <span class="font-['Pacifico'] text-yellow text-2xl">StoreSync</span>
+        </div>
+        <nav class="hidden md:flex space-x-8">
+          <a href="homepage.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Home</a>
+          <a href="shop.html"
+            class="text-white font-medium hover:text-primary px-3 py-2 border-b-2 border-primary">Shop</a>
+          <a href="accessories.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Accessories</a>
+          <a href="offers.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Offers</a>
+          <a href="about.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">About</a>
+          <a href="contact.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Contact</a>
+        </nav>
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer">
+            <a href="search.html"><i class="ri-search-line ri-xl"></i></a>
+          </div>
+          <div class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer">
+            <a href="profile.html"><i class="ri-user-line ri-xl"></i></a>
+          </div>
+          <div id="cartToggle"
+            class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer relative">
+            <i class="ri-shopping-cart-line ri-xl"></i>
+            <span class="cart-icon-number">3</span>
+          </div>
+          <button class="md:hidden w-10 h-10 flex items-center justify-center text-gray-300">
+            <i class="ri-menu-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Hero Section -->
+<section class="pt-20 relative overflow-hidden fade-in">
+  <!-- Background Image with Shading -->
+  <div class="absolute inset-0 z-0 bg-gray-700">
+    <!-- Removed non-existent image -->
+  </div>
+
+  <!-- Foreground Content -->
+  <div class="container mx-auto px-4 h-[500px] flex items-center relative z-10">
+    <div class="max-w-2xl bg-white text-black p-12 rounded-lg shadow-lg hover-scale">
+      <h2 class="text-4xl md:text-5xl font-bold mb-4">
+        Revolutionize Your Retail Experience
+      </h2>
+      <p class="text-lg mb-8">
+        StoreSync delivers cutting-edge inventory management solutions that streamline operations and boost your bottom line.
+      </p>
+      <button
+        class="bg-primary text-white font-semibold px-8 py-3 !rounded-button hover:bg-opacity-90 transition-all shadow-md whitespace-nowrap flex items-center hover-scale">
+        Shop Now
+        <i class="ri-arrow-right-line ml-2"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+  <!-- Main Content -->
+  <section class="container mx-auto px-4 py-12 fade-in">
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Product Grid -->
+      <div class="flex-1">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-secondary">Products (12)</h2>
+          <div class="flex items-center space-x-2">
+            <span class="text-white-600">Sort by:</span>
+            <div class="relative">
+              <button
+                class="bg-yellow border border-yellow-300 text-yellow-300 py-2 px-4 !rounded-button flex items-center whitespace-nowrap hover-scale">
+                Popularity
+                <div class="w-4 h-4 flex items-center justify-center ml-2">
+                  <i class="ri-arrow-down-s-line"></i>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Product Card 1 -->
+          <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card" data-category="hardware">
+            <div class="h-48 overflow-hidden">
+                <img src="https://readdy.ai/api/search-image?query=sleek%20modern%20inventory%20management%20device%20with%20touchscreen%20display%2C%20professional%20grade%20hardware%20with%20yellow%20accents%2C%20clean%20minimalist%20design%20on%20white%20background%2C%20high-quality%20product%20photography&width=600&height=400&seq=2&orientation=landscape" alt="StoreSync Pro" class="w-full h-full object-cover product-image">
+            </div>
+            <div class="p-4">
+              <div class="flex justify-between items-start">
+                <h3 class="text-lg font-semibold text-secondary">StoreSync Pro</h3>
+                <span class="font-bold text-secondary">$899</span>
+              </div>
+              <p class="text-white text-sm mt-2">All-in-one inventory management solution with advanced AI capabilities.
+              </p>
+              <ul class="mt-3 space-y-1">
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Cloud-based synchronization
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Real-time inventory tracking
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Multi-location support
+                </li>
+              </ul>
+              <button
+                class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                  <i class="ri-shopping-cart-line"></i>
+                </div>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <!-- Product Card 2 -->
+          <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card" data-category="software">
+            <div class="h-48 overflow-hidden">
+              <img
+                src="https://readdy.ai/api/search-image?query=compact%20handheld%20inventory%20scanner%20with%20yellow%20details%2C%20professional%20retail%20device%2C%20sleek%20modern%20design%2C%20white%20background%2C%20high-quality%20product%20photography&width=600&height=400&seq=3&orientation=landscape"
+                alt="StoreSync Scanner" class="w-full h-full object-cover product-image">
+            </div>
+            <div class="p-4">
+              <div class="flex justify-between items-start">
+                <h3 class="text-lg font-semibold text-secondary">StoreSync Scanner</h3>
+                <span class="font-bold text-secondary">$349</span>
+              </div>
+              <p class="text-white text-sm mt-2">Portable barcode scanner with instant cloud synchronization.</p>
+              <ul class="mt-3 space-y-1">
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Wireless connectivity
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  12-hour battery life
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Rugged design
+                </li>
+              </ul>
+              <button
+                class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                  <i class="ri-shopping-cart-line"></i>
+                </div>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <!-- Product Card 3 -->
+          <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card" data-category="bundles">
+            <div class="h-48 overflow-hidden">
+              <img
+                src="https://readdy.ai/api/search-image?query=modern%20retail%20point%20of%20sale%20system%20with%20touchscreen%20and%20yellow%20accents%2C%20sleek%20design%2C%20professional%20equipment%2C%20white%20background%2C%20high-quality%20product%20photography&width=600&height=400&seq=4&orientation=landscape"
+                alt="StoreSync POS" class="w-full h-full object-cover product-image">
+            </div>
+            <div class="p-4">
+              <div class="flex justify-between items-start">
+                <h3 class="text-lg font-semibold text-secondary">StoreSync POS</h3>
+                <span class="font-bold text-secondary">$1,299</span>
+              </div>
+              <p class="text-white text-sm mt-2">Complete point-of-sale system with inventory integration.</p>
+              <ul class="mt-3 space-y-1">
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Touchscreen display
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Payment processing
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Customer management
+                </li>
+              </ul>
+              <button
+                class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                  <i class="ri-shopping-cart-line"></i>
+                </div>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <!-- Product Card 4 -->
+          <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card" data-category="popular">
+            <div class="h-48 overflow-hidden">
+              <img
+                src="https://readdy.ai/api/search-image?query=software%20dashboard%20interface%20for%20inventory%20management%20with%20yellow%20and%20gray%20color%20scheme%2C%20professional%20business%20application%2C%20clean%20modern%20UI%20design%2C%20digital%20product%20visualization&width=600&height=400&seq=5&orientation=landscape"
+                alt="StoreSync Software" class="w-full h-full object-cover product-image">
+            </div>
+            <div class="p-4">
+              <div class="flex justify-between items-start">
+                <h3 class="text-lg font-semibold text-secondary">StoreSync Software</h3>
+                <span class="font-bold text-secondary">$599</span>
+              </div>
+              <p class="text-white text-sm mt-2">Powerful inventory management software with analytics.</p>
+              <ul class="mt-3 space-y-1">
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Data visualization
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Predictive ordering
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Custom reporting
+                </li>
+              </ul>
+              <button
+                class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                  <i class="ri-shopping-cart-line"></i>
+                </div>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <!-- Product Card 5 -->
+          <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card" data-category="bundles">
+            <div class="h-48 overflow-hidden">
+              <img
+                src="https://readdy.ai/api/search-image?query=complete%20retail%20management%20bundle%20with%20hardware%20and%20software%20components%2C%20yellow%20and%20gray%20branded%20tech%20products%2C%20professional%20business%20solution%2C%20clean%20arrangement%20on%20white%20background&width=600&height=400&seq=6&orientation=landscape"
+                alt="StoreSync Enterprise Bundle" class="w-full h-full object-cover product-image">
+            </div>
+            <div class="p-4">
+              <div class="flex justify-between items-start">
+                <h3 class="text-lg font-semibold text-secondary">Enterprise Bundle</h3>
+                <span class="font-bold text-secondary">$2,499</span>
+              </div>
+              <p class="text-white text-sm mt-2">Complete solution for large retail operations. Includes all necessary
+                products for retail enviornments. </p>
+              <ul class="mt-3 space-y-1">
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Hardware + Software bundle
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Premium support
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Training included
+                </li>
+              </ul>
+              <button
+                class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+                <div class="w-5 h-5 flex items-center justify-bottom mr-2">
+                  <i class="ri-shopping-cart-line"></i>
+                </div>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <!-- Product Card 6 -->
+          <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card" data-category="hardware">
+            <div class="h-48 overflow-hidden">
+              <img
+                src="https://readdy.ai/api/search-image?query=mobile%20inventory%20management%20app%20on%20smartphone%20and%20tablet%20devices%2C%20yellow%20and%20gray%20interface%2C%20professional%20business%20application%2C%20digital%20product%20visualization%20on%20white%20background&width=600&height=400&seq=7&orientation=landscape"
+                alt="StoreSync Mobile" class="w-full h-full object-cover product-image">
+            </div>
+            <div class="p-4">
+              <div class="flex justify-between items-start">
+                <h3 class="text-lg font-semibold text-secondary">StoreSync Mobile</h3>
+                <span class="font-bold text-secondary">$199</span>
+              </div>
+              <p class="text-white text-sm mt-2">Mobile app licenses for on-the-go inventory management.</p>
+              <ul class="mt-3 space-y-1">
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  iOS and Android compatible
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  5 user licenses
+                </li>
+                <li class="flex items-center text-xs text-white">
+                  <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                    <i class="ri-check-line"></i>
+                  </div>
+                  Offline mode
+                </li>
+              </ul>
+              <button
+                class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+                <div class="w-5 h-5 flex items-center justify-center mr-2">
+                  <i class="ri-shopping-cart-line"></i>
+                </div>
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-center">
+          <div class="flex space-x-1">
+            <button id="prevPage"
+              class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100">
+              <i class="ri-arrow-left-s-line"></i>
+            </button>
+            <button id="page1"
+              class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded bg-primary text-gray-800 font-medium">1</button>
+            <button id="page2"
+              class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded text-white hover:bg-gray-100">2</button>
+            <button id="nextPage"
+              class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded text-gray-600 hover:bg-gray-100">
+              <i class="ri-arrow-right-s-line"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Cart Sidebar -->
+  <div id="cartOverlay" class="cart-overlay fixed inset-0 bg-black bg-opacity-50 z-50"></div>
+  <div id="cartSidebar"
+    class="cart-sidebar fixed top-0 right-0 w-full md:w-96 h-full bg-white shadow-lg z-50 overflow-y-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-secondary">Your Cart (3)</h3>
+        <button id="closeCart" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-secondary">
+          <i class="ri-close-line ri-lg"></i>
+        </button>
+      </div>
+      <div class="space-y-4" id="cartItemsContainer">
+        <!-- Cart Item 1 -->
+        <div class="flex items-center space-x-4 pb-4 border-b">
+          <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
+            <img
+              src="https://readdy.ai/api/search-image?query=sleek%20modern%20inventory%20management%20device%20with%20touchscreen%20display%2C%20professional%20grade%20hardware%20with%20yellow%20accents%2C%20clean%20minimalist%20design%20on%20white%20background%2C%20high-quality%20product%20photography&width=100&height=100&seq=8&orientation=squarish"
+              alt="StoreSync Pro" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1">
+            <h4 class="font-medium text-secondary">StoreSync Pro</h4>
+            <p class="text-sm text-gray-600">Qty: 1</p>
+            <div class="flex justify-between items-center mt-1">
+              <span class="font-bold text-secondary">$899</span>
+              <button class="text-gray-400 hover:text-red-500">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Cart Item 2 -->
+        <div class="flex items-center space-x-4 pb-4 border-b">
+          <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
+            <img
+              src="https://readdy.ai/api/search-image?query=software%20dashboard%20interface%20for%20inventory%20management%20with%20yellow%20and%20gray%20color%20scheme%2C%20professional%20business%20application%2C%20clean%20modern%20UI%20design%2C%20digital%20product%20visualization&width=100&height=100&seq=9&orientation=squarish"
+              alt="StoreSync Software" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1">
+            <h4 class="font-medium text-secondary">StoreSync Software</h4>
+            <p class="text-sm text-gray-600">Qty: 1</p>
+            <div class="flex justify-between items-center mt-1">
+              <span class="font-bold text-secondary">$599</span>
+              <button class="text-gray-400 hover:text-red-500">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- Cart Item 3 -->
+        <div class="flex items-center space-x-4 pb-4 border-b">
+          <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
+            <img
+              src="https://readdy.ai/api/search-image?query=mobile%20inventory%20management%20app%20on%20smartphone%20and%20tablet%20devices%2C%20yellow%20and%20gray%20interface%2C%20professional%20business%20application%2C%20digital%20product%20visualization%20on%20white%20background&width=100&height=100&seq=10&orientation=squarish"
+              alt="StoreSync Mobile" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1">
+            <h4 class="font-medium text-secondary">StoreSync Mobile</h4>
+            <p class="text-sm text-gray-600">Qty: 1</p>
+            <div class="flex justify-between items-center mt-1">
+              <span class="font-bold text-secondary">$199</span>
+              <button class="text-gray-400 hover:text-red-500">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-6 space-y-2">
+        <div class="flex justify-between text-gray-600">
+          <span>Subtotal</span>
+          <span id="cartTotal">$1,697.00</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>Shipping</span>
+          <span>$0.00</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>Tax</span>
+          <span>$169.70</span>
+        </div>
+        <div class="flex justify-between font-bold text-secondary text-lg pt-2 border-t">
+          <span>Total</span>
+          <span id="cartGrandTotal">$1,866.70</span>
+        </div>
+      </div>
+      <button
+        class="w-full bg-primary text-secondary font-semibold py-3 !rounded-button hover:bg-opacity-90 transition-all mt-6 whitespace-nowrap">Proceed
+        to Checkout</button>
+      <button
+        class="w-full border border-gray-300 text-secondary font-medium py-3 !rounded-button hover:bg-gray-50 transition-all mt-3 whitespace-nowrap">Continue
+        Shopping</button>
+    </div>
+  </div>
+  <script>
+    // Cart Toggle
+    const cartToggle = document.getElementById('cartToggle');
+    const closeCart = document.getElementById('closeCart');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartItemsContainer = document.getElementById('cartItemsContainer');
+    const cartTotalElement = document.getElementById('cartTotal');
+
+    // Universal cart data
+    const cartItems = {};
+    let cartTotal = 0;
+
+    // Open and close cart sidebar
+    cartToggle.addEventListener('click', () => {
+      cartSidebar.classList.add('open');
+      cartOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    function closeCartSidebar() {
+      cartSidebar.classList.remove('open');
+      cartOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    closeCart.addEventListener('click', closeCartSidebar);
+    cartOverlay.addEventListener('click', closeCartSidebar);
+
+    // Add to Cart functionality
+    function setupProductEventListeners() {
+      document.querySelectorAll('.product-card button').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const productCard = button.closest('.product-card');
+          const productName = productCard.querySelector('h3').textContent;
+          const productPrice = parseFloat(productCard.querySelector('.font-bold.text-secondary').textContent.replace('$', ''));
+          const productImage = productCard.querySelector('img').src;
+
+          if (cartItems[productName]) {
+            cartItems[productName].quantity += 1;
+          } else {
+            cartItems[productName] = {
+              name: productName,
+              price: productPrice,
+              image: productImage,
+              quantity: 1
+            };
+          }
+
+          // Add ripple effect to the button
+          button.classList.add('add-to-cart-animation');
+          setTimeout(() => button.classList.remove('add-to-cart-animation'), 600);
+
+          updateCart();
+        });
+      });
+    }
+
+    // Update cart display and total
+    function updateCart() {
+      cartItemsContainer.innerHTML = '';
+      cartTotal = 0;
+      let cartItemCount = 0;
+
+      Object.values(cartItems).forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        cartTotal += itemTotal; // Accumulate total price
+        cartItemCount += item.quantity;
+
+        const cartItemHTML = `
+        <div class="flex items-center space-x-4 pb-4 border-b">
+          <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
+            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1">
+            <h4 class="font-medium text-secondary">${item.name}</h4>
+            <p class="text-sm text-gray-600">Qty: ${item.quantity}</p>
+            <div class="flex justify-between items-center mt-1">
+              <span class="font-bold text-secondary">$${itemTotal.toFixed(2)}</span>
+              <button class="text-gray-400 hover:text-red-500 remove-cart-item" data-name="${item.name}">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+        cartItemsContainer.insertAdjacentHTML('beforeend', cartItemHTML);
+      });
+
+      // Update total price and grand total in the cart
+      const taxRate = 0.1; // Example tax rate of 10%
+      const taxAmount = cartTotal * taxRate;
+      const grandTotal = cartTotal + taxAmount;
+
+      cartTotalElement.textContent = `$${cartTotal.toFixed(2)}`;
+      document.getElementById('cartGrandTotal').textContent = `$${grandTotal.toFixed(2)}`;
+      document.querySelector('.cart-sidebar h3').textContent = `Your Cart (${cartItemCount})`;
+
+      // Update cart icon number
+      const cartIconNumber = document.querySelector('#cartToggle .cart-icon-number');
+      cartIconNumber.textContent = cartItemCount;
+      cartIconNumber.classList.add('pop-animation');
+      setTimeout(() => cartIconNumber.classList.remove('pop-animation'), 300);
+
+      // Add event listeners for remove buttons
+      document.querySelectorAll('.remove-cart-item').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const itemName = e.target.closest('button').dataset.name;
+          delete cartItems[itemName];
+          updateCart();
+        });
+      });
+    }
+
+    // Initialize product event listeners
+    document.addEventListener('DOMContentLoaded', setupProductEventListeners);
+  </script>
+  <script>
+    // Pagination functionality
+    document.addEventListener('DOMContentLoaded', function () {
+      // Get all pagination buttons
+      const page1 = document.getElementById('page1');
+      const page2 = document.getElementById('page2');
+      const prevPage = document.getElementById('prevPage');
+      const nextPage = document.getElementById('nextPage');
+
+      // Current page tracker
+      let currentPage = 1;
+
+      // Function to update active page styling
+      function updateActivePage(pageNum) {
+        // Remove active class from all buttons
+        [page1, page2].forEach(btn => {
+          btn.classList.remove('bg-primary', 'text-secondary', 'font-medium');
+          btn.classList.add('text-gray-600');
+        });
+
+        // Add active class to current page button
+        const activeBtn = document.getElementById('page' + pageNum);
+        activeBtn.classList.add('bg-primary', 'text-secondary', 'font-medium');
+        activeBtn.classList.remove('text-gray-600');
+
+        // Update current page
+        currentPage = pageNum;
+      }
+
+      // Function to load new products based on page
+      function loadProducts(pageNum) {
+        const productGrid = document.querySelector('.grid.grid-cols-1');
+
+        // Simulate loading new products (in a real app, this would fetch from server)
+        if (pageNum === 2) {
+          productGrid.innerHTML = `
+        <!-- Product Card 7 -->
+        <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=advanced%20analytics%20dashboard%20for%20retail%20with%20yellow%20accents%2C%20business%20intelligence%20visualization%2C%20professional%20software%20interface%2C%20clean%20modern%20design&width=600&height=400&seq=11&orientation=landscape" alt="StoreSync Analytics" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Analytics</h3>
+              <span class="font-bold text-secondary">$799</span>
+            </div>
+            <p class="text-white text-sm mt-2">Advanced analytics module for data-driven decisions.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Predictive analytics
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Custom dashboards
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Export capabilities
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product Card 8 -->
+        <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=retail%20employee%20training%20module%20with%20yellow%20interface%20elements%2C%20professional%20e-learning%20platform%2C%20business%20software%20solution%2C%20clean%20modern%20design&width=600&height=400&seq=12&orientation=landscape" alt="StoreSync Training" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Training</h3>
+              <span class="font-bold text-secondary">$399</span>
+            </div>
+            <p class="text-white text-sm mt-2">Employee training module with certification tracking.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Interactive lessons
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Progress tracking
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Certification system
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product Card 9 -->
+        <div class="bg-gray-800 rounded-lg shadow-md overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=retail%20security%20system%20with%20cameras%20and%20yellow%20branded%20elements%2C%20professional%20loss%20prevention%20solution%2C%20modern%20security%20hardware%2C%20clean%20product%20photography&width=600&height=400&seq=13&orientation=landscape" alt="StoreSync Security" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Security</h3>
+              <span class="font-bold text-secondary">$1,499</span>
+            </div>
+            <p class="text-white text-sm mt-2">Integrated security and loss prevention system.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                RFID tracking
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Video monitoring
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Theft prevention
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">
+              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product Card 10 -->
+        <div class="bg-gray rounded shadow-sm overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=customer%20loyalty%20program%20interface%20with%20yellow%20branding%20elements%2C%20professional%20retail%20CRM%20solution%2C%20modern%20software%20design%2C%20digital%20product%20visualization&width=600&height=400&seq=14&orientation=landscape" alt="StoreSync Loyalty" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Loyalty</h3>
+              <span class="font-bold text-secondary">$499</span>
+            </div>
+            <p class="text-white text-sm mt-2">Customer loyalty and rewards program management.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Points system
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Customer profiles
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Targeted promotions
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product Card 11 -->
+        <div class="bg-gray rounded shadow-sm overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=e-commerce%20integration%20module%20with%20yellow%20interface%20elements%2C%20online%20store%20management%2C%20professional%20retail%20software%20solution%2C%20digital%20product%20visualization&width=600&height=400&seq=15&orientation=landscape" alt="StoreSync E-Commerce" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync E-Commerce</h3>
+              <span class="font-bold text-secondary">$899</span>
+            </div>
+            <p class="text-white text-sm mt-2">Omnichannel retail solution for online and offline sales.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Website integration
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Unified inventory
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Order management
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        
+        <!-- Product Card 12 -->
+        <div class="bg-gray rounded shadow-sm overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=supply%20chain%20management%20interface%20with%20yellow%20elements%2C%20vendor%20relationship%20software%2C%20professional%20business%20solution%2C%20digital%20product%20visualization&width=600&height=400&seq=16&orientation=landscape" alt="StoreSync Supply Chain" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Supply Chain</h3>
+              <span class="font-bold text-secondary">$1,199</span>
+            </div>
+            <p class="text-white text-sm mt-2">Vendor and supply chain management solution.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Vendor portal
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Order automation
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Logistics tracking
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      `;
+          setupTab2Products(); // Attach event listeners for tab 2 products
+        } else if (pageNum === 1) {
+          // Reset to original products (page 1)
+          productGrid.innerHTML = `
+        <!-- Product Card 1 -->
+        <div class="bg-gray rounded shadow-sm overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=sleek%20modern%20inventory%20management%20device%20with%20touchscreen%20display%2C%20professional%20grade%20hardware%20with%20yellow%20accents%2C%20clean%20minimalist%20design%20on%20white%20background%2C%20high-quality%20product%20photography&width=600&height=400&seq=2&orientation=landscape" alt="StoreSync Pro" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Pro</h3>
+              <span class="font-bold text-secondary">$899</span>
+            </div>
+            <p class="text-white text-sm mt-2">All-in-one inventory management solution with advanced AI capabilities.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Cloud-based synchronization
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Real-time inventory tracking
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Multi-location support
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <!-- Product Card 2 -->
+        <div class="bg-gray rounded shadow-sm overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=compact%20handheld%20inventory%20scanner%20with%20yellow%20details%2C%20professional%20retail%20device%2C%20sleek%20modern%20design%2C%20white%20background%2C%20high-quality%20product%20photography&width=600&height=400&seq=3&orientation=landscape" alt="StoreSync Scanner" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Scanner</h3>
+              <span class="font-bold text-secondary">$349</span>
+            </div>
+            <p class="text-white text-sm mt-2">Portable barcode scanner with instant cloud synchronization.</p>
+<ul class="mt-3 space-y-1">
+  <li class="flex items-center text-xs text-white">
+    <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+      <i class="ri-check-line"></i>
+    </div>
+    Wireless connectivity
+  </li>
+  <li class="flex items-center text-xs text-white">
+    <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+      <i "class="ri-check-line"></i>
+    </div>
+    12-hour battery life
+  </li>
+  <li class="flex items-center text-xs text-white">
+    <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+      <i class="ri-check-line"></i>
+    </div>
+    Rugged design
+  </li>
+</ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <!-- Product Card 3 -->
+        <div class="bg-gray rounded shadow-sm overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=modern%20retail%20point%20of%20sale%20system%20with%20touchscreen%20and%20yellow%20accents%2C%20sleek%20design%2C%20professional%20equipment%2C%20white%20background%2C%20high-quality%20product%20photography&width=600&height=400&seq=4&orientation=landscape" alt="StoreSync POS" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync POS</h3>
+              <span class="font-bold text-secondary">$1,299</span>
+            </div>
+            <p class="text-white text-sm mt-2">Complete point-of-sale system with inventory integration.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Touchscreen display
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Payment processing
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Customer management
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center hover-scale">              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <!-- Product Card 4 -->
+        <div class="bg-gray rounded shadow-sm overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=software%20dashboard%20interface%20for%20inventory%20management%20with%20yellow%20and%20gray%20color%20scheme%2C%20professional%20business%20application%2C%20clean%20modern%20UI%20design%2C%20digital%20product%20visualization&width=600&height=400&seq=5&orientation=landscape" alt="StoreSync Software" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Software</h3>
+              <span class="font-bold text-secondary">$599</span>
+            </div>
+            <p class="text-white text-sm mt-2">Powerful inventory management software with analytics.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Data visualization
+              </li>
+              <li class="flex items-center text-xs text-white">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">Enterprise Bundle</h3>
+              <span class="font-bold text-secondary">$2,499</span>
+            </div>
+            <p class="text-white text-sm mt-2">Complete solution for large retail operations.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Hardware + Software bundle
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Premium support
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Training included
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center">              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+        <!-- Product Card 6 -->
+        <div class="bg-gray rounded shadow-sm overflow-hidden product-card">
+          <div class="h-48 overflow-hidden">
+            <img src="https://readdy.ai/api/search-image?query=mobile%20inventory%20management%20app%20on%20smartphone%20and%20tablet%20devices%2C%20yellow%20and%20gray%20interface%2C%20professional%20business%20application%2C%20digital%20product%20visualization%20on%20white%20background&width=600&height=400&seq=7&orientation=landscape" alt="StoreSync Mobile" class="w-full h-full object-cover product-image">
+          </div>
+          <div class="p-4">
+            <div class="flex justify-between items-start">
+              <h3 class="text-lg font-semibold text-secondary">StoreSync Mobile</h3>
+              <span class="font-bold text-secondary">$199</span>
+            </div>
+            <p class="text-white text-sm mt-2">Mobile app licenses for on-the-go inventory management.</p>
+            <ul class="mt-3 space-y-1">
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                iOS and Android compatible
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                5 user licenses
+              </li>
+              <li class="flex items-center text-xs text-white">
+                <div class="w-4 h-4 flex items-center justify-center mr-2 text-primary">
+                  <i class="ri-check-line"></i>
+                </div>
+                Offline mode
+              </li>
+            </ul>
+            <button class="w-full bg-primary text-gray-800 font-medium py-2 mt-4 !rounded-button hover:bg-opacity-90 transition-all whitespace-nowrap flex items-center justify-center">              <div class="w-5 h-5 flex items-center justify-center mr-2">
+                <i class="ri-shopping-cart-line"></i>
+              </div>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      `;
+        }
+
+        // Scroll to top of product section
+        const productSection = document.querySelector('.container.mx-auto.px-4.py-12');
+        if (productSection) {
+          window.scrollTo({
+            top: productSection.offsetTop - 100,
+            behavior: 'smooth'
+          });
+        }
+      }
+
+      // Add click event listeners to pagination buttons
+      page1.addEventListener('click', function () {
+        updateActivePage(1);
+        loadProducts(1);
+      });
+
+      page2.addEventListener('click', function () {
+        updateActivePage(2);
+        loadProducts(2);
+      });
+
+      prevPage.addEventListener('click', function () {
+        if (currentPage > 1) {
+          updateActivePage(currentPage - 1);
+          loadProducts(currentPage);
+        }
+      });
+
+      nextPage.addEventListener('click', function () {
+        if (currentPage < 2) {
+          updateActivePage(currentPage + 1);
+          loadProducts(currentPage);
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

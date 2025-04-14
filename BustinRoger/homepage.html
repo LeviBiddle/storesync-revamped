@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home - StoreSync</title>
+  <link rel="shortcut icon" type="image/x-icon" href="madMax.ico" />
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { primary: "#FDCD22", secondary: "#3B82F6" },
+          borderRadius: {
+            none: "0px",
+            sm: "8px",
+            DEFAULT: "12px",
+            md: "16px",
+            lg: "20px",
+            xl: "24px",
+            "2xl": "28px",
+            "3xl": "32px",
+            full: "9999px",
+            button: "12px",
+
+          },
+        },
+      },
+    };
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+  <style>
+    :where([class^="ri-"])::before {
+      content: "\f3c2";
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .hero-section {
+      background-image: url('https://public.readdy.ai/ai/img_res/c2979bcdf82cf970f63db85e4d50bc08.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      /* Adjusted to fit the screen */
+    }
+
+    .slide-in {
+      animation: slideIn 1s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .cart-sidebar {
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      background-color: #ffffff;
+    }
+
+    .cart-sidebar.open {
+      transform: translateX(0);
+    }
+
+    .cart-overlay {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease;
+    }
+
+    .cart-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .cart-icon-number {
+      position: absolute;
+      top: 1px;
+      right: 1px;
+      background-color: #FDCD22;
+      color: #121212;
+      font-size: 0.75rem;
+      font-weight: bold;
+      border-radius: 9999px;
+      width: 1.25rem;
+      height: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center;
+    }
+  </style>
+  <script>
+    let hasScrolled = false;
+    let isScrolling = false;
+
+    function scrollToSection() {
+      const nextSection = document.querySelector('.py-16.bg-gray-800');
+      if (nextSection) {
+        const offset = -50; // Adjusted to stop a little higher
+        const position = nextSection.getBoundingClientRect().top + window.scrollY + offset;
+        isScrolling = true; // Block further scroll input
+        window.scrollTo({ top: position, behavior: 'smooth' });
+
+        // Allow scrolling again after the animation duration
+        setTimeout(() => {
+          isScrolling = false;
+        }, 3000); // Increased duration to 2000ms for a slower animation
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!hasScrolled && !isScrolling) {
+        hasScrolled = true;
+        scrollToSection();
+      }
+    });
+  </script>
+</head>
+
+<body class="bg-gray-900">
+  <!-- Header -->
+  <header class="w-full bg-gray-800 shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0 flex items-center">
+          <img src="newpic.png" alt="StoreSync Logo" class="h-8 mr-2">
+          <span class="font-['Pacifico'] text-yellow text-2xl">StoreSync</span>
+        </div>
+        <nav class="hidden md:flex space-x-8">
+          <a href="homepage.html"
+            class="text-white font-medium hover:text-primary px-3 py-2 border-b-2 border-primary">Home</a>
+          <a href="shop.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Shop</a>
+          <a href="accessories.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Accessories</a>
+          <a href="offers.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Offers</a>
+          <a href="about.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">About</a>
+          <a href="contact.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Contact</a>
+
+        </nav>
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer">
+            <a href="search.html"><i class="ri-search-line ri-xl"></i></a>
+          </div>
+          <div class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer">
+            <a href="profile.html"><i class="ri-user-line ri-xl"></i></a>
+          </div>
+          <div id="cartToggle"
+            class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer relative">
+            <i class="ri-shopping-cart-line ri-xl"></i>
+            <span class="cart-icon-number">0</span>
+          </div>
+          <button class="md:hidden w-10 h-10 flex items-center justify-center text-gray-300">
+            <i class="ri-menu-line"></i>
+          </button>
+          <button class="md:hidden w-10 h-10 flex items-center justify-center text-gray-300">
+            <i class="ri-menu-line ri-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Hero Section -->
+  <section class="hero-section w-full relative">
+    <div class="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative z-10">
+      <div class="w-full max-w-2xl">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 slide-in">
+          Innovation Awaits with Cutting-Edge Tech
+        </h1>
+        <p class="text-xl text-white/90 mb-8 slide-in">
+          Explore the future with our premium devices designed for the modern
+          tech enthusiast. Performance that impresses, design that inspires.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 slide-in">
+          <a href="shop.html"
+            class="bg-primary text-white px-6 py-3 font-medium !rounded-button hover:bg-primary/90 whitespace-nowrap">
+            Shop Now
+          </a>
+          <a href="learn-more.html"
+            class="bg-white text-gray-900 px-6 py-3 font-medium !rounded-button hover:bg-gray-100 whitespace-nowrap">
+            Learn More
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Introduction Section -->
+  <section class="py-16 bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-white mb-4">
+          Engineered for Performance, Designed for Innovation
+        </h2>
+        <p class="text-lg text-gray-300 max-w-3xl mx-auto">
+          Our mission is to provide high-quality tech products that maximize
+          performance without compromising on design. Every device is
+          meticulously engineered with innovation at its core.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-gray-700 p-8 rounded-lg text-center hover:shadow-lg transition-shadow">
+          <div class="w-16 h-16 flex items-center justify-center bg-primary/20 text-primary rounded-full mx-auto mb-6">
+            <i class="ri-cpu-line ri-2x"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-3">
+            Cutting-Edge Technology
+          </h3>
+          <p class="text-gray-300">
+            Our products feature the latest processors and components that
+            deliver exceptional performance and efficiency.
+          </p>
+        </div>
+        <div class="bg-gray-700 p-8 rounded-lg text-center hover:shadow-lg transition-shadow">
+          <div class="w-16 h-16 flex items-center justify-center bg-primary/20 text-primary rounded-full mx-auto mb-6">
+            <i class="ri-shield-check-line ri-2x"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-3">
+            Premium Build Quality
+          </h3>
+          <p class="text-gray-300">
+            Engineered with precision and premium materials to ensure
+            reliability and longevity for all your digital needs.
+          </p>
+        </div>
+        <div class="bg-gray-700 p-8 rounded-lg text-center hover:shadow-lg transition-shadow">
+          <div class="w-16 h-16 flex items-center justify-center bg-primary/20 text-primary rounded-full mx-auto mb-6">
+            <i class="ri-customer-service-2-line ri-2x"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-white mb-3">
+            Premium Support
+          </h3>
+          <p class="text-gray-300">
+            24/7 technical assistance and a 2-year extended warranty with
+            every purchase to ensure your complete satisfaction.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Testimonials -->
+  <section class="py-16 bg-gray-850">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-white mb-4">
+          What Our Customers Say
+        </h2>
+        <p class="text-lg text-gray-300 max-w-3xl mx-auto">
+          Real experiences from adventurers who trust our gear
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-gray-700 p-8 rounded-lg shadow-lg relative overflow-hidden group">
+          <div class="absolute inset-0 border-2 border-transparent rounded-lg group-hover:border-primary transition-all"></div>
+          <div class="flex items-center mb-4 relative z-10">
+            <div class="text-primary flex">
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 relative z-10">
+            “Since switching to StoreSync, our inventory accuracy has gone from 86% to 98% across all five locations. The real-time tracking and mobile app have made a huge difference for our floor staff. StoreSync has easily paid for itself in the first quarter.”
+          </p>
+          <div class="flex items-center relative z-10">
+            <div class="w-12 h-12 rounded-full bg-gray-600 overflow-hidden mr-4">
+              <img src="https://public.readdy.ai/ai/img_res/1ae3aab0c8a186071795a1f159da0488.jpg" alt="Emily Richardson" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="font-medium text-white">Marcus Wei</h4>
+              <p class="text-sm text-gray-400">General Manager</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-700 p-8 rounded-lg shadow-lg relative overflow-hidden group">
+          <div class="absolute inset-0 border-2 border-transparent rounded-lg group-hover:border-primary transition-all"></div>
+          <div class="flex items-center mb-4 relative z-10">
+            <div class="text-primary flex">
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 relative z-10">
+            “The StoreSync Scanner and Software combo changed the game for my boutique. I no longer stress about stock counts or overselling online. It's simple, efficient, and feels like it was built for businesses like mine.”
+          </p>
+          <div class="flex items-center relative z-10">
+            <div class="w-12 h-12 rounded-full bg-gray-600 overflow-hidden mr-4">
+              <img src="https://public.readdy.ai/ai/img_res/8ad0bf8f4f473562a4c153a6900b18a5.jpg" alt="Marcus Wei" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="font-medium text-white">Sarah Richardson</h4>
+              <p class="text-sm text-gray-400">Small Business Owner</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-700 p-8 rounded-lg shadow-lg relative overflow-hidden group">
+          <div class="absolute inset-0 border-2 border-transparent rounded-lg group-hover:border-primary transition-all"></div>
+          <div class="flex items-center mb-4 relative z-10">
+            <div class="text-primary flex">
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-fill"></i>
+              <i class="ri-star-half-fill"></i>
+            </div>
+          </div>
+          <p class="text-gray-300 mb-6 relative z-10">
+            “We rolled out the Enterprise Bundle in 14 locations over six weeks, and StoreSync’s team was there every step of the way. From POS setup to training, it was seamless. The analytics dashboard gives us insights we never had before.”
+          </p>
+          <div class="flex items-center relative z-10">
+            <div class="w-12 h-12 rounded-full bg-gray-600 overflow-hidden mr-4">
+              <img src="https://public.readdy.ai/ai/img_res/b765f2c5e4ea49beff4937a8e4c2248a.jpg" alt="Sophia Chen" class="w-full h-full object-cover" />
+            </div>
+            <div>
+              <h4 class="font-medium text-white">Sophia Chen</h4>
+              <p class="text-sm text-gray-400">Director of Operations</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Impact Section -->
+  <section class="py-16 bg-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl font-bold text-white mb-6">
+            Our Technological Impact
+          </h2>
+          <p class="text-lg text-gray-300 mb-8">
+            Every purchase you make helps us further our mission of advancing
+            technology that enhances business function. Here's how we're
+            making a difference:
+          </p>
+          <div class="space-y-6">
+            <div class="flex">
+              <div
+                class="w-12 h-12 flex items-center justify-center bg-primary/20 text-primary rounded-full mr-4 flex-shrink-0">
+                <i class="ri-battery-charge-line ri-lg"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-white mb-2">
+                  Energy Efficiency
+                </h3>
+                <p class="text-gray-300">
+                  Our devices use 60% less power than industry standards,
+                  extending battery life and reducing energy consumption.
+                </p>
+              </div>
+            </div>
+            <div class="flex">
+              <div
+                class="w-12 h-12 flex items-center justify-center bg-primary/20 text-primary rounded-full mr-4 flex-shrink-0">
+                <i class="ri-code-line ri-lg"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-white mb-2">
+                  Open Source
+                </h3>
+                <p class="text-gray-300">
+                  We've contributed over 100,000 lines of code to open source
+                  projects through our partnership with global tech
+                  initiatives.
+                </p>
+              </div>
+            </div>
+            <div class="flex">
+              <div
+                class="w-12 h-12 flex items-center justify-center bg-primary/20 text-primary rounded-full mr-4 flex-shrink-0">
+                <i class="ri-secure-payment-line ri-lg"></i>
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold text-white mb-2">
+                  Data Security
+                </h3>
+                <p class="text-gray-300">
+                  Our devices feature military-grade encryption and have
+                  prevented over 3 million potential data breaches.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <img src="https://public.readdy.ai/ai/img_res/b765f2c5e4ea49beff4937a8e4c2248a.jpg" alt="Technology Impact"
+            class="w-full h-auto rounded-lg shadow-lg" />
+          <div class="absolute -bottom-6 -left-6 bg-gray-900 p-6 rounded-lg shadow-lg">
+            <div class="flex items-center">
+              <div class="w-12 h-12 flex items-center justify-center bg-primary text-gray-900 rounded-full mr-4">
+                <i class="ri-database-2-line ri-lg"></i>
+              </div>
+              <div>
+                <p class="text-sm text-gray-400">Data Protected</p>
+                <p class="text-2xl font-bold text-white">1,250 TB</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Newsletter -->
+  <section class="py-16 bg-primary">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">
+          Join Our Tech Community
+        </h2>
+        <p class="text-xl text-gray-800 max-w-2xl mx-auto">
+          Subscribe to receive updates on new products, special offers, and
+          tips for maximizing your tech experience.
+        </p>
+      </div>
+      <div class="max-w-md mx-auto">
+        <form class="flex">
+          <input type="email" placeholder="Your email address"
+            class="flex-grow px-4 py-3 rounded-l-button border-none focus:outline-none focus:ring-2 focus:ring-gray-900/30 text-gray-900" />
+          <button type="submit"
+            class="bg-gray-900 text-primary px-6 py-3 font-medium !rounded-r-button hover:bg-gray-800 whitespace-nowrap">
+            Subscribe
+          </button>
+        </form>
+        <p class="text-gray-800 text-sm mt-4 text-center">
+          We respect your privacy. Unsubscribe at any time.
+        </p>
+      </div>
+    </div>
+  </section>
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div>
+          <span class="font-['Pacifico'] text-primary text-2xl mb-4 block">logo</span>
+          <p class="text-gray-300 mb-4">
+            Premium tech products for the modern enthusiast. Performance that
+            impresses, design that inspires.
+          </p>
+          <div class="flex space-x-4">
+            <a href="#"
+              class="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full hover:bg-primary hover:text-gray-900 transition-colors">
+              <i class="ri-facebook-fill ri-lg"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full hover:bg-primary hover:text-gray-900 transition-colors">
+              <i class="ri-instagram-line ri-lg"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full hover:bg-primary hover:text-gray-900 transition-colors">
+              <i class="ri-twitter-x-line ri-lg"></i>
+            </a>
+            <a href="#"
+              class="w-10 h-10 flex items-center justify-center bg-gray-700 rounded-full hover:bg-primary hover:text-gray-900 transition-colors">
+              <i class="ri-youtube-line ri-lg"></i>
+            </a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4 text-white">Shop</h3>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">All Products</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Audio</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Wearables</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Power & Charging</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Accessories</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Gift Cards</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4 text-white">Company</h3>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">About Us</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Innovation</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Our Impact</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Careers</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Press</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Contact Us</a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold mb-4 text-white">Support</h3>
+          <ul class="space-y-2">
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Help Center</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Shipping & Returns</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Warranty</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Size Guide</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Track Order</a>
+            </li>
+            <li>
+              <a href="#" class="text-gray-300 hover:text-primary">Privacy Policy</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-400 text-sm mb-4 md:mb-0">
+            © 2025 Tech Gear. All rights reserved.
+          </p>
+          <div class="flex items-center space-x-4">
+            <div class="w-8 h-8 flex items-center justify-center">
+              <i class="ri-visa-fill ri-lg text-gray-300"></i>
+            </div>
+            <div class="w-8 h-8 flex items-center justify-center">
+              <i class="ri-mastercard-fill ri-lg text-gray-300"></i>
+            </div>
+            <div class="w-8 h-8 flex items-center justify-center">
+              <i class="ri-paypal-fill ri-lg text-gray-300"></i>
+            </div>
+            <div class="w-8 h-8 flex items-center justify-center">
+              <i class="ri-apple-fill ri-lg text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- Cart Sidebar -->
+  <div id="cartOverlay" class="cart-overlay fixed inset-0 bg-black bg-opacity-50 z-50"></div>
+  <div id="cartSidebar"
+    class="cart-sidebar fixed top-0 right-0 w-full md:w-96 h-full bg-white shadow-lg z-50 overflow-y-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold text-secondary">Your Cart (0)</h3>
+        <button id="closeCart" class="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-secondary">
+          <i class="ri-close-line ri-lg"></i>
+        </button>
+      </div>
+      <div class="space-y-4" id="cartItemsContainer">
+        <!-- Cart items will be dynamically added here -->
+      </div>
+      <div class="mt-6 space-y-2">
+        <div class="flex justify-between text-gray-600">
+          <span>Subtotal</span>
+          <span id="cartTotal">$0.00</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>Shipping</span>
+          <span>$0.00</span>
+        </div>
+        <div class="flex justify-between text-gray-600">
+          <span>Tax</span>
+          <span>$0.00</span>
+        </div>
+        <div class="flex justify-between font-bold text-secondary text-lg pt-2 border-t">
+          <span>Total</span>
+          <span id="cartGrandTotal">$0.00</span>
+        </div>
+      </div>
+      <button
+        class="w-full bg-primary text-secondary font-semibold py-3 !rounded-button hover:bg-opacity-90 transition-all mt-6 whitespace-nowrap">Proceed
+        to Checkout</button>
+      <button
+        class="w-full border border-gray-300 text-secondary font-medium py-3 !rounded-button hover:bg-gray-50 transition-all mt-3 whitespace-nowrap">Continue
+        Shopping</button>
+    </div>
+  </div>
+  <script>
+    // Cart Toggle
+
+    // Open and close cart sidebar
+    cartToggle.addEventListener('click', () => {
+      cartSidebar.classList.add('open');
+      cartOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    function closeCartSidebar() {
+      cartSidebar.classList.remove('open');
+      cartOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    closeCart.addEventListener('click', closeCartSidebar);
+    cartOverlay.addEventListener('click', closeCartSidebar);
+
+    // Update cart display and total
+    function updateCart() {
+      cartItemsContainer.innerHTML = '';
+      cartTotal = 0;
+      let cartItemCount = 0;
+
+      Object.values(cartItems).forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        cartTotal += itemTotal;
+        cartItemCount += item.quantity;
+
+        const cartItemHTML = `
+        <div class="flex items-center space-x-4 pb-4 border-b">
+          <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
+            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1">
+            <h4 class="font-medium text-secondary">${item.name}</h4>
+            <p class="text-sm text-gray-600">Qty: ${item.quantity}</p>
+            <div class="flex justify-between items-center mt-1">
+              <span class="font-bold text-secondary">$${itemTotal.toFixed(2)}</span>
+              <button class="text-gray-400 hover:text-red-500 remove-cart-item" data-name="${item.name}">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+        cartItemsContainer.insertAdjacentHTML('beforeend', cartItemHTML);
+      });
+
+      const taxRate = 0.1;
+      const taxAmount = cartTotal * taxRate;
+      const grandTotal = cartTotal + taxAmount;
+
+      cartTotalElement.textContent = `$${cartTotal.toFixed(2)}`;
+      document.getElementById('cartGrandTotal').textContent = `$${grandTotal.toFixed(2)}`;
+      document.querySelector('.cart-sidebar h3').textContent = `Your Cart (${cartItemCount})`;
+
+      document.querySelectorAll('.remove-cart-item').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const itemName = e.target.closest('button').dataset.name;
+          delete cartItems[itemName];
+          updateCart();
+        });
+      });
+    }
+  </script>
+  <script>
+    // Cart Toggle
+    const cartToggle = document.getElementById('cartToggle');
+    const closeCart = document.getElementById('closeCart');
+    const cartSidebar = document.getElementById('cartSidebar');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartItemsContainer = document.querySelector('.cart-sidebar .space-y-4');
+    const cartTotalElement = document.querySelector('.cart-sidebar .font-bold.text-secondary.text-lg span');
+    let cartTotal = 0;
+    const cartItems = {};
+
+    // Open and close cart sidebar
+    cartToggle.addEventListener('click', () => {
+      cartSidebar.classList.add('open');
+      cartOverlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    function closeCartSidebar() {
+      cartSidebar.classList.remove('open');
+      cartOverlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    closeCart.addEventListener('click', closeCartSidebar);
+    cartOverlay.addEventListener('click', closeCartSidebar);
+
+    // Add to Cart functionality
+    function setupProductEventListeners() {
+      document.querySelectorAll('.product-card button').forEach(button => {
+        button.addEventListener('click', () => {
+          const productCard = button.closest('.product-card');
+          const productName = productCard.querySelector('h3').textContent;
+          const productPrice = parseFloat(productCard.querySelector('.text-lg.font-bold.text-white').textContent.replace('$', ''));
+          const productImage = productCard.querySelector('img').src;
+
+          // Check if item already exists in the cart
+          if (cartItems[productName]) {
+            cartItems[productName].quantity += 1;
+          } else {
+            cartItems[productName] = {
+              name: productName,
+              price: productPrice,
+              image: productImage,
+              quantity: 1
+            };
+          }
+
+          // Add ripple effect to the button
+          button.classList.add('add-to-cart-animation');
+          setTimeout(() => button.classList.remove('add-to-cart-animation'), 600);
+
+          updateCart();
+        });
+      });
+    }
+
+    // Update cart display and total
+    function updateCart() {
+      cartItemsContainer.innerHTML = '';
+      cartTotal = 0;
+      let cartItemCount = 0;
+
+      Object.values(cartItems).forEach(item => {
+        const itemTotal = item.price * item.quantity;
+        cartTotal += itemTotal;
+        cartItemCount += item.quantity;
+
+        const cartItemHTML = `
+        <div class="flex items-center space-x-4 pb-4 border-b">
+          <div class="w-20 h-20 bg-gray-100 rounded overflow-hidden">
+            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1">
+            <h4 class="font-medium text-secondary">${item.name}</h4>
+            <p class="text-sm text-gray-600">Qty: ${item.quantity}</p>
+            <div class="flex justify-between items-center mt-1">
+              <span class="font-bold text-secondary">$${itemTotal.toFixed(2)}</span>
+              <button class="text-gray-400 hover:text-red-500 remove-cart-item" data-name="${item.name}">
+                <i class="ri-delete-bin-line"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+        cartItemsContainer.insertAdjacentHTML('beforeend', cartItemHTML);
+      });
+
+      cartTotalElement.textContent = `$${cartTotal.toFixed(2)}`;
+      document.querySelector('.cart-sidebar h3').textContent = `Your Cart (${cartItemCount})`;
+
+      // Add event listeners for remove buttons
+      document.querySelectorAll('.remove-cart-item').forEach(button => {
+        button.addEventListener('click', (e) => {
+          const itemName = e.target.closest('button').dataset.name;
+          delete cartItems[itemName];
+          updateCart();
+        });
+      });
+    }
+
+    // Initialize product event listeners
+    document.addEventListener('DOMContentLoaded', setupProductEventListeners);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - StoreSync</title>
+  <link rel="shortcut icon" type="image/x-icon" href="madMax.ico" />
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <script>tailwind.config = { theme: { extend: { colors: { primary: '#FDCD22', secondary: '#00000' }, borderRadius: { 'none': '0px', 'sm': '8px', DEFAULT: '12px', 'md': '16px', 'lg': '20px', 'xl': '24px', '2xl': '28px', '3xl': '32px', 'full': '9999px', 'button': '12px' } } } }</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+  <style>
+    :where([class^="ri-"])::before {
+      content: "\f3c2";
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .text-secondary {
+      color: #FDCD22;
+      /* Changed from blue to yellow */
+    }
+
+    .bg-white {
+      background-color: #1F2937;
+      /* Changed from white to dark gray */
+    }
+
+    .text-gray-700 {
+      color: #e0e0e0;
+      /* Adjusted to match the dark theme */
+    }
+
+    .text-gray-600 {
+      color: #cbd5e1;
+      /* Slightly lighter gray for contrast */
+    }
+
+    /* Subtle glowing text effect */
+    .glow-text {
+      text-shadow: 0 0 5px #FDCD22, 0 0 10px #FDCD22;
+    }
+
+    /* Smooth fade-in animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Button hover effect with a soft glow */
+    .button-hover-effect {
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+
+    .button-hover-effect:hover {
+      box-shadow: 0 0 8px #FDCD22;
+      transform: translateY(-2px);
+    }
+
+    /* Subtle background gradient */
+    .section-bg {
+      background: linear-gradient(135deg, rgba(253, 205, 34, 0.1), rgba(0, 0, 0, 0.8));
+    }
+
+    /* Enhanced carousel container styling */
+    .carousel-container {
+      position: relative;
+      overflow: hidden;
+      max-width: 100%;
+      margin: 0 auto;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .carousel-card {
+      min-width: 100%;
+      flex-shrink: 0;
+      padding: 3rem 2rem;
+      background-color: #1F2937;
+      text-align: center;
+    }
+
+    .carousel-card h2 {
+      font-size: 2.5rem;
+      color: #FDCD22;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    .carousel-card p {
+      color: #e0e0e0;
+      font-size: 1.125rem;
+      line-height: 1.75rem;
+    }
+
+    /* Navigation buttons */
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: #FDCD22;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      border-radius: 50%;
+      z-index: 10;
+      transition: background-color 0.3s ease;
+    }
+
+    .carousel-nav.left {
+      left: 1rem;
+    }
+
+    .carousel-nav.right {
+      right: 1rem;
+    }
+
+    .carousel-nav:hover {
+      background-color: #FDCD22;
+      color: #121212;
+    }
+
+    /* Carousel indicators */
+    .carousel-indicators {
+      display: flex;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .carousel-indicator {
+      width: 12px;
+      height: 12px;
+      background-color: #e0e0e0;
+      border-radius: 50%;
+      margin: 0 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .carousel-indicator.active {
+      background-color: #FDCD22;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 60vh; /* Reduced height */
+      background: url('https://via.placeholder.com/1920x1080') center/cover no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+      background-blend-mode: overlay;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .hero h1 {
+      font-size: 2.5rem; /* Smaller font size */
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1rem; /* Smaller font size */
+      margin-bottom: 2rem;
+    }
+
+    .hero .cta-btn {
+      background-color: #FDCD22;
+      color: #121212;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .hero .cta-btn:hover {
+      background-color: #e0b800;
+    }
+
+    /* About Us Section */
+    .about-us {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      padding: 4rem 2rem;
+      align-items: center;
+    }
+
+    .about-us .text {
+      flex: 1;
+    }
+
+    .about-us .image {
+      flex: 1;
+      text-align: center;
+    }
+
+    .about-us .image img {
+      max-width: 100%;
+      border-radius: 12px;
+    }
+
+    /* Features Section */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      padding: 4rem 2rem;
+    }
+
+    .feature-card {
+      background-color: #1F2937;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-card i {
+      font-size: 2rem;
+      color: #FDCD22;
+      margin-bottom: 1rem;
+    }
+
+    /* How It Works Section */
+    .how-it-works {
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+
+    .step {
+      flex: 1;
+      max-width: 300px;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .step:hover {
+      transform: translateY(-10px);
+
+    }
+
+    .step i {
+      font-size: 2rem;
+      color: #FDCD22;
+      margin-bottom: 1rem;
+      transition: color 0.3s ease;
+    }
+
+    .step:hover i {
+      color: #e0b800;
+    }
+
+    /* Call to Action Section */
+    .cta {
+      padding: 4rem 2rem;
+      text-align: center;
+      background-color: #FDCD22;
+      color: #121212;
+    }
+
+    .cta .cta-btn {
+      background-color: #121212;
+      color: #FDCD22;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .cta .cta-btn:hover {
+      background-color: #000;
+    }
+
+    /* Testimonials Section */
+    .testimonials {
+      padding: 4rem 2rem;
+      background-color: #1F2937;
+      color: #e0e0e0;
+    }
+
+    .testimonial {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .testimonial img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial p {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .testimonial .name {
+      font-weight: bold;
+      color: #FDCD22;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900">
+  <!-- Header -->
+  <header class="w-full bg-gray-800 shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex-shrink-0 flex items-center">
+          <img src="newpic.png" alt="StoreSync Logo" class="h-8 mr-2">
+          <span class="font-['Pacifico'] text-yellow text-2xl">StoreSync</span>
+        </div>
+        <nav class="hidden md:flex space-x-8">
+          <a href="homepage.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Home</a>
+          <a href="shop.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Shop</a>
+          <a href="accessories.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Accessories</a>
+          <a href="offers.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Offers</a>
+          <a href="about.html"
+            class="text-white font-medium hover:text-primary px-3 py-2 border-b-2 border-primary">About</a>
+          <a href="contact.html"
+            class="text-gray-300 hover:text-primary px-3 py-2 border-b-2 border-transparent hover:border-primary">Contact</a>
+        </nav>
+        <div class="flex items-center space-x-4">
+          <div class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer">
+            <a href="search.html"><i class="ri-search-line ri-xl"></i></a>
+          </div>
+          <div class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer">
+            <a href="profile.html"><i class="ri-user-line ri-xl"></i></a>
+          </div>
+          <div id="cartToggle"
+            class="w-10 h-10 flex items-center justify-center text-gray-300 hover:text-primary cursor-pointer relative">
+            <i class="ri-shopping-cart-line ri-xl"></i>
+            <span class="cart-icon-number">3</span>
+          </div>
+          <button class="md:hidden w-10 h-10 flex items-center justify-center text-gray-300">
+            <i class="ri-menu-line"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Welcome to StoreSync</h1>
+    <p>Revolutionizing the retail experience with cutting-edge technology.</p>
+    <a href="#about" class="cta-btn" id="learnMoreBtn">Learn More</a>
+  </section>
+
+  <!-- About Us Section -->
+  <section id="about" class="about-us">
+    <div class="text">
+      <h2 class="text-3xl font-bold text-secondary mb-4">About Us</h2>
+      <p class="mb-4">
+        StoreSync is dedicated to revolutionizing the retail experience by providing cutting-edge inventory management solutions. 
+        Our mission is to empower businesses to thrive in a competitive market by optimizing efficiency and profitability.
+      </p>
+      <button id="toggleMenuBtn" class="bg-primary text-gray-900 px-4 py-2 rounded-lg font-bold hover:bg-yellow-500">
+        Learn More
+      </button>
+    </div>
+    <div class="image">
+      <img src="newpic.png" alt="About Us" class="rounded-lg shadow-md">
+    </div>
+  </section>
+
+  <!-- Details Menu -->
+  <div id="detailsMenu" class="hidden bg-gray-800 text-gray-300 py-8 px-4">
+    <div class="max-w-4xl mx-auto">
+      <h3 class="text-2xl font-bold text-secondary mb-4">Our Vision</h3>
+      <p class="mb-6">
+        Our vision at StoreSync is to change the shopping industry for the better, for the consumer, and the business. 
+        We envision a future where customers and businesses can interact through relevant technology, through helpful 
+        and organic interaction. Using our technology, we strive to create lasting change for businesses and customers.
+      </p>
+      <h3 class="text-2xl font-bold text-secondary mb-4">Our Mission</h3>
+      <p>
+        At StoreSync, our mission is to revolutionize the shopping industry through modern technological innovation. 
+        We strive to bring relevant improvements to the consumer's everyday life by enhancing the current market and 
+        providing channels to boost customer-business relationships. Through integrity and innovation, we aim to bring 
+        forward a new era of commerce.
+      </p>
+      <button id="closeMenuBtn" class="bg-primary text-gray-900 px-4 py-2 rounded-lg font-bold hover:bg-yellow-500 mt-4">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <section class="features">
+    <div class="feature-card">
+      <i class="ri-smartphone-line"></i>
+      <h3 class="text-xl font-bold text-secondary mb-2">Mobile Integration</h3>
+      <p>Manage your inventory on the go with our mobile-friendly solutions.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ri-cloud-line"></i>
+      <h3 class="text-xl font-bold text-secondary mb-2">Cloud-Based</h3>
+      <p>Access your data anytime, anywhere with our secure cloud platform.</p>
+    </div>
+    <div class="feature-card">
+      <i class="ri-bar-chart-line"></i>
+      <h3 class="text-xl font-bold text-secondary mb-2">Analytics</h3>
+      <p>Gain insights into your business with advanced analytics tools.</p>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <h2 class="text-3xl font-bold text-secondary mb-6">How It Works</h2>
+    <div class="steps">
+      <div class="step" onclick="alert('Step 1: Sign up and create your account.')">
+        <i class="ri-user-add-line"></i>
+        <h3 class="text-xl font-bold text-secondary mb-2">Step 1</h3>
+        <p>Sign up and create your account.</p>
+      </div>
+      <div class="step" onclick="alert('Step 2: Upload your inventory data.')">
+        <i class="ri-upload-cloud-line"></i>
+        <h3 class="text-xl font-bold text-secondary mb-2">Step 2</h3>
+        <p>Upload your inventory data.</p>
+      </div>
+      <div class="step" onclick="alert('Step 3: Analyze and optimize your operations.')">
+        <i class="ri-bar-chart-grouped-line"></i>
+        <h3 class="text-xl font-bold text-secondary mb-2">Step 3</h3>
+        <p>Analyze and optimize your operations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action Section -->
+  <section class="cta">
+    <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+    <a href="signup.html" class="cta-btn">Sign Up Now</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="w-full bg-gray-800 py-6">
+    <div class="container mx-auto px-4">
+      <div class="flex justify-between items-center">
+        <div class="text-gray-400">
+          &copy; 2023 StoreSync. All rights reserved.
+        </div>
+        <div class="flex space-x-4">
+          <a href="privacy.html" class="text-gray-400 hover:text-primary">Privacy Policy</a>
+          <a href="terms.html" class="text-gray-400 hover:text-primary">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const carousel = document.getElementById('carousel');
+    const indicators = document.querySelectorAll('.carousel-indicator');
+    let currentIndex = 0;
+
+    function updateCarousel() {
+      const offset = -currentIndex * 100;
+      carousel.style.transform = `translateX(${offset}%)`;
+      indicators.forEach((indicator, index) => {
+        indicator.classList.toggle('active', index === currentIndex);
+      });
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex > 0) ? currentIndex - 1 : carousel.children.length - 1;
+      updateCarousel();
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex < carousel.children.length - 1) ? currentIndex + 1 : 0;
+      updateCarousel();
+    }
+
+    function goToSlide(index) {
+      currentIndex = index;
+      updateCarousel();
+    }
+
+    document.getElementById('learnMoreBtn').addEventListener('click', function (event) {
+      event.preventDefault();
+      document.querySelector('#about').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('toggleCardsBtn').addEventListener('click', function () {
+      const cardsContainer = document.getElementById('cardsContainer');
+      cardsContainer.classList.toggle('hidden');
+      cardsContainer.classList.toggle('fade-in');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const openPopupBtn = document.getElementById('openPopupBtn');
+      const closePopupBtn = document.getElementById('closePopupBtn');
+      const popupMenu = document.getElementById('popupMenu');
+
+      // Function to show the popup
+      function showPopup() {
+        popupMenu.classList.remove('hidden');
+        popupMenu.classList.add('flex');
+      }
+
+      // Function to hide the popup
+      function hidePopup() {
+        popupMenu.classList.add('hidden');
+        popupMenu.classList.remove('flex');
+      }
+
+      // Open popup menu
+      openPopupBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        showPopup();
+      });
+
+      // Close popup menu
+      closePopupBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        hidePopup();
+      });
+
+      // Close popup when clicking outside the menu
+      window.addEventListener('click', (event) => {
+        if (event.target === popupMenu) {
+          hidePopup();
+        }
+      });
+
+      const toggleMenuBtn = document.getElementById('toggleMenuBtn');
+      const closeMenuBtn = document.getElementById('closeMenuBtn');
+      const detailsMenu = document.getElementById('detailsMenu');
+
+      // Show the menu
+      toggleMenuBtn.addEventListener('click', () => {
+        detailsMenu.classList.remove('hidden');
+      });
+
+      // Hide the menu
+      closeMenuBtn.addEventListener('click', () => {
+        detailsMenu.classList.add('hidden');
+      });
+    });
+  </script>
+  <style>
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</body>
+
+</html>
